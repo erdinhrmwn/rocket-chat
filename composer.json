@@ -1,4 +1,5 @@
 {
+	"version": "2.0",
 	"name": "erdinhrmwn/rocket-chat",
 	"description": "Rocket Chat REST API client for Laravel.",
 	"license": "MIT",
