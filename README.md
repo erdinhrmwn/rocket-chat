@@ -8,7 +8,7 @@ to your `composer.json` file:
 ```json
 {
     "require": {
-        "erdinhrmwn/rocket-chat": "dev-master"
+        "erdinhrmwn/rocket-chat": "^3.0"
     }
 }
 ```
