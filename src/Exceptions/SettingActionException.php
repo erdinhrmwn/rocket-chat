@@ -1,6 +1,6 @@
 <?php
 
-namespace Noisim\RocketChat\Exceptions;
+namespace Erdinhrmwn\RocketChat\Exceptions;
 
 use Exception;
 
@@ -17,7 +17,8 @@ class SettingActionException extends Exception
         return $this->getMessage();
     }
 
-    public function setMessage($message) {
+    public function setMessage($message)
+    {
         $this->message = $message;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace Noisim\RocketChat\Entities;
+namespace Erdinhrmwn\RocketChat\Entities;
 
-use Noisim\RocketChat\Exceptions\ChatActionException;
-use Noisim\RocketChat\Exceptions\IntegrationActionException;
+use Erdinhrmwn\RocketChat\Exceptions\ChatActionException;
+use Erdinhrmwn\RocketChat\Exceptions\IntegrationActionException;
 
 class Integration extends Entity
 {

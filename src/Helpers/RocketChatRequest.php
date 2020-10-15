@@ -1,6 +1,6 @@
 <?php
 
-namespace Noisim\RocketChat\Helpers;
+namespace Erdinhrmwn\RocketChat\Helpers;
 
 use Httpful\Request;
 

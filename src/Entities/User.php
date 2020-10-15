@@ -1,9 +1,8 @@
 <?php
 
-namespace Noisim\RocketChat\Entities;
+namespace Erdinhrmwn\RocketChat\Entities;
 
-use Noisim\RocketChat\Exceptions\UserActionException;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Erdinhrmwn\RocketChat\Exceptions\UserActionException;
 
 class User extends Entity
 {
@@ -15,9 +14,22 @@ class User extends Entity
     private $emails;
 
     private $roles = ['user'];
+    private $verified = false;
     private $active = true;
+    private $requirePasswordChange = false;
+    private $sendWelcomeEmail = false;
 
-    private $fillable = ["username", "password", "name", "email", "roles", "active"];
+    private $fillable = [
+        "username",
+        "password",
+        "name",
+        "email",
+        "roles",
+        "active",
+        "verified",
+        "requirePasswordChange",
+        "sendWelcomeEmail"
+    ];
 
     private $authToken;
 
@@ -59,7 +71,7 @@ class User extends Entity
         }
         return $this;
     }
-    
+
     public function logout()
     {
         $response = $this->request()->get($this->api_url("logout"))->send();
@@ -78,6 +90,7 @@ class User extends Entity
         $this->emails = $body->emails;
         $this->username = $body->username;
         $this->active = $body->active;
+        $this->verified = $body->emails[0]->verified;
         $this->roles = isset($body->roles) ? $body->roles : [];
         return $this;
     }
@@ -89,6 +102,7 @@ class User extends Entity
         foreach ($this->fillable as $field) {
             $postData[$field] = $this->{$field};
         }
+
         $response = $this->request()->post($this->api_url("users.create"))
             ->body($postData)
             ->send();
@@ -100,6 +114,7 @@ class User extends Entity
         $this->emails = $user->emails;
         $this->username = $user->username;
         $this->active = $user->active;
+        $this->verified = $user->emails[0]->verified;
         $this->roles = $user->roles;
         return $this;
     }
@@ -115,9 +130,9 @@ class User extends Entity
             $postData["data"][$key] = $value;
         }
 
-        if ($this->password == null && !isset($fields["password"])) {
-            throw new UserActionException("Password is required when updating a user.");
-        }
+        // if ($this->password == null && !isset($fields["password"])) {
+        //     throw new UserActionException("Password is required when updating a user.");
+        // }
 
         $response = $this->request()->post($this->api_url("users.update"))
             ->body($postData)
@@ -130,6 +145,7 @@ class User extends Entity
         $this->emails = $user->emails;
         $this->username = $user->username;
         $this->active = $user->active;
+        $this->verified = $user->emails[0]->verified;
         $this->roles = $user->roles;
         return $this;
     }
@@ -154,6 +170,7 @@ class User extends Entity
         $this->emails = $user->emails;
         $this->username = $user->username;
         $this->active = $user->active;
+        $this->verified = $user->emails[0]->verified;
         $this->roles = $user->roles;
         return $this;
     }
@@ -162,9 +179,7 @@ class User extends Entity
     {
         $id = ($id) ? $id : $this->id;
 
-        if (!$id) {
-            throw new UserActionException("User ID not specified.");
-        }
+        if (!$id) throw new UserActionException("User ID not specified.");
 
         $response = $this->request()->post($this->api_url("users.delete"))
             ->body(["userId" => $id])
@@ -177,7 +192,7 @@ class User extends Entity
         $response = $this->request()->get($this->api_url("users.list"))->send();
         return $this->handle_response($response, new UserActionException(), ["users"]);
     }
-    
+
     public function getList($params = [])
     {
         $response = $this->request()->get($this->api_url("users.list", $params))->send();
@@ -188,13 +203,11 @@ class User extends Entity
     {
         $id = ($id) ? $id : $this->id;
 
-        if (!in_array($paramType, ["userId", "username"])) {
+        if (!in_array($paramType, ["userId", "username"]))
             throw new UserActionException("Bad method parameter value.");
-        }
 
-        if (!$id) {
-            throw new UserActionException("User ID not specified.");
-        }
+
+        if (!$id) throw new UserActionException("User ID not specified.");
 
         $response = $this->request()->post($this->api_url("users.createToken"))
             ->body([$paramType => $id])
@@ -206,13 +219,11 @@ class User extends Entity
     public function avatar($id = null, $paramType = "userId")
     {
         $id = ($id) ? $id : $this->id;
-        if (!in_array($paramType, ["userId", "username"])) {
-            throw new UserActionException("Bad method parameter value.");
-        }
 
-        if (!$id) {
-            throw new UserActionException("User ID not specified.");
-        }
+        if (!in_array($paramType, ["userId", "username"]))
+            throw new UserActionException("Bad method parameter value.");
+
+        if (!$id) throw new UserActionException("User ID not specified.");
 
         $response = $this->request()->get($this->api_url("users.getAvatar", [$paramType => $id]))
             ->send();
@@ -222,13 +233,11 @@ class User extends Entity
     public function presence($id = null, $paramType = "userId")
     {
         $id = ($id) ? $id : $this->id;
-        if (!in_array($paramType, ["userId", "username"])) {
-            throw new UserActionException("Bad method parameter value.");
-        }
 
-        if (!$id) {
-            throw new UserActionException("User ID not specified.");
-        }
+        if (!in_array($paramType, ["userId", "username"]))
+            throw new UserActionException("Bad method parameter value.");
+
+        if (!$id) throw new UserActionException("User ID not specified.");
 
         $response = $this->request()->get($this->api_url("users.getPresence", [$paramType => $id]))
             ->send();
@@ -256,6 +265,7 @@ class User extends Entity
         $this->emails = $user->emails;
         $this->username = $user->username;
         $this->active = $user->active;
+        $this->verified = $user->emails[0]->verified;
         $this->roles = $user->roles;
         return $this;
     }
@@ -297,6 +307,18 @@ class User extends Entity
         return $this->handle_response($response, new UserActionException());
     }
 
+    public function toJson()
+    {
+        $data = collect();
+        $data->put("id", $this->id());
+        $data->put("username", $this->username());
+        $data->put("name", $this->name());
+        $data->put("email", $this->email());
+        $data->put("roles", $this->roles());
+        $data->put("verified", $this->roles());
+        return $data;
+    }
+
     /** Getters and Setters */
 
     public function id()
@@ -327,6 +349,11 @@ class User extends Entity
     public function roles()
     {
         return $this->roles;
+    }
+
+    public function verified()
+    {
+        return $this->verified;
     }
 
     public function authToken()
@@ -367,6 +394,12 @@ class User extends Entity
     public function setRoles($roles)
     {
         $this->roles = $roles;
+        return $this;
+    }
+
+    public function setVerified($verified)
+    {
+        $this->verified = $verified;
         return $this;
     }
 }

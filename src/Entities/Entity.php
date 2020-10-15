@@ -1,9 +1,9 @@
 <?php
 
-namespace Noisim\RocketChat\Entities;
+namespace Erdinhrmwn\RocketChat\Entities;
 
-use Noisim\RocketChat\Exceptions\UserActionException;
-use Noisim\RocketChat\Helpers\RocketChatRequest;
+use Erdinhrmwn\RocketChat\Exceptions\UserActionException;
+use Erdinhrmwn\RocketChat\Helpers\RocketChatRequest;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class Entity
@@ -33,7 +33,7 @@ class Entity
 
     protected function add_request_headers($headers, $storeInSession = false)
     {
-        if($storeInSession) {
+        if ($storeInSession) {
             $this->session->set('RC_Headers', $headers);
         }
         RocketChatRequest::add_headers($headers);
@@ -88,7 +88,6 @@ class Entity
                 } else {
                     $exception->setMessage("Something went wrong.");
                 }
-
             } else {
                 if (isset($response->body->status) && $response->body->status == 'error') {
                     $exception->setMessage($response->body->message);
@@ -98,7 +97,6 @@ class Entity
                     $exception->setMessage("Something went wrong.");
                 }
             }
-
         } catch (\Exception $ex) {
             $exception->setMessage("Something went wrong.");
         }

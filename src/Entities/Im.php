@@ -1,8 +1,8 @@
 <?php
 
-namespace Noisim\RocketChat\Entities;
+namespace Erdinhrmwn\RocketChat\Entities;
 
-use Noisim\RocketChat\Exceptions\ImActionException;
+use Erdinhrmwn\RocketChat\Exceptions\ImActionException;
 
 class Im extends Entity
 {

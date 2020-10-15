@@ -1,8 +1,8 @@
 <?php
 
-namespace Noisim\RocketChat\Entities;
+namespace Erdinhrmwn\RocketChat\Entities;
 
-use Noisim\RocketChat\Exceptions\ChannelActionException;
+use Erdinhrmwn\RocketChat\Exceptions\ChannelActionException;
 
 class Channel extends Entity
 {

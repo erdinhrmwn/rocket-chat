@@ -1,8 +1,8 @@
 <?php
 
-namespace Noisim\RocketChat\Entities;
+namespace Erdinhrmwn\RocketChat\Entities;
 
-use Noisim\RocketChat\Exceptions\GroupActionException;
+use Erdinhrmwn\RocketChat\Exceptions\GroupActionException;
 
 class Group extends Entity
 {

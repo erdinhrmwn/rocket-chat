@@ -1,6 +1,6 @@
 <?php
 
-namespace Noisim\RocketChat\Facades;
+namespace Erdinhrmwn\RocketChat\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

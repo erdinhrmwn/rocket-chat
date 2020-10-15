@@ -1,8 +1,8 @@
 <?php
 
-namespace Noisim\RocketChat\Entities;
+namespace Erdinhrmwn\RocketChat\Entities;
 
-use Noisim\RocketChat\Exceptions\RocketChatActionException;
+use Erdinhrmwn\RocketChat\Exceptions\RocketChatActionException;
 
 class RocketChat extends Entity
 {
