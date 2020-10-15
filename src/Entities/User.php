@@ -14,10 +14,8 @@ class User extends Entity
     private $emails;
 
     private $roles = ['user'];
-    private $verified = false;
     private $active = true;
-    private $requirePasswordChange = false;
-    private $sendWelcomeEmail = false;
+    private $verified = false;
 
     private $fillable = [
         "username",
@@ -123,16 +121,10 @@ class User extends Entity
     {
         $postData = [];
         $postData["userId"] = $this->id;
-        foreach ($this->fillable as $field) {
-            $postData["data"][$field] = $this->{$field};
-        }
+
         foreach ($fields as $key => $value) {
             $postData["data"][$key] = $value;
         }
-
-        // if ($this->password == null && !isset($fields["password"])) {
-        //     throw new UserActionException("Password is required when updating a user.");
-        // }
 
         $response = $this->request()->post($this->api_url("users.update"))
             ->body($postData)
@@ -351,6 +343,11 @@ class User extends Entity
         return $this->roles;
     }
 
+    public function active()
+    {
+        return $this->active;
+    }
+
     public function verified()
     {
         return $this->verified;
@@ -394,6 +391,12 @@ class User extends Entity
     public function setRoles($roles)
     {
         $this->roles = $roles;
+        return $this;
+    }
+
+    public function setActive($active)
+    {
+        $this->active = $active;
         return $this;
     }
 
