@@ -306,9 +306,11 @@ class User extends Entity
         $data->put("username", $this->username());
         $data->put("name", $this->name());
         $data->put("email", $this->email());
+        $data->put("emails", $this->emails());
         $data->put("roles", $this->roles());
-        $data->put("verified", $this->roles());
-        return $data;
+        $data->put("active", $this->active());
+        $data->put("verified", $this->verified());
+        return (object) $data->all();
     }
 
     /** Getters and Setters */
