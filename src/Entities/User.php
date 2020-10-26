@@ -16,6 +16,8 @@ class User extends Entity
     private $roles = ['user'];
     private $active = true;
     private $verified = false;
+    private $requirePasswordChange = false;
+    private $sendWelcomeEmail = false;
 
     private $fillable = [
         "username",
@@ -49,6 +51,7 @@ class User extends Entity
             $this->name = ($name) ? $name : $this->name;
             $this->email = ($email) ? $email : $this->email;
         }
+
         return $this;
     }
 
@@ -72,7 +75,10 @@ class User extends Entity
 
     public function logout()
     {
-        $response = $this->request()->get($this->api_url("logout"))->send();
+        $response = $this->request()
+            ->get($this->api_url("logout"))
+            ->send();
+
         $message = $this->handle_response($response, new UserActionException(), ["data", "message"]);
         $this->session->remove("RC_Headers");
         return $message;
@@ -80,7 +86,10 @@ class User extends Entity
 
     public function me()
     {
-        $response = $this->request()->get($this->api_url("me"))->send();
+        $response = $this->request()
+            ->get($this->api_url("me"))
+            ->send();
+
         $body = $this->handle_response($response, new UserActionException());
         $this->id = $body->_id;
         $this->name = $body->name;
@@ -126,7 +135,8 @@ class User extends Entity
             $postData["data"][$key] = $value;
         }
 
-        $response = $this->request()->post($this->api_url("users.update"))
+        $response = $this->request()
+            ->post($this->api_url("users.update"))
             ->body($postData)
             ->send();
 
@@ -154,7 +164,10 @@ class User extends Entity
             throw new UserActionException("User ID not specified.");
         }
 
-        $response = $this->request()->get($this->api_url("users.info", [$paramType => $id]))->send();
+        $response = $this->request()
+            ->get($this->api_url("users.info", [$paramType => $id]))
+            ->send();
+
         $user = $this->handle_response($response, new UserActionException(), ["user"]);
         $this->id = $user->_id;
         $this->name = $user->name;
@@ -173,7 +186,8 @@ class User extends Entity
 
         if (!$id) throw new UserActionException("User ID not specified.");
 
-        $response = $this->request()->post($this->api_url("users.delete"))
+        $response = $this->request()
+            ->post($this->api_url("users.delete"))
             ->body(["userId" => $id])
             ->send();
         return $this->handle_response($response, new UserActionException());
@@ -181,13 +195,19 @@ class User extends Entity
 
     public function all()
     {
-        $response = $this->request()->get($this->api_url("users.list"))->send();
+        $response = $this->request()
+            ->get($this->api_url("users.list", ["count" => 0]))
+            ->send();
+
         return $this->handle_response($response, new UserActionException(), ["users"]);
     }
 
     public function getList($params = [])
     {
-        $response = $this->request()->get($this->api_url("users.list", $params))->send();
+        $response = $this->request()
+            ->get($this->api_url("users.list", $params))
+            ->send();
+
         return $this->handle_response($response, new UserActionException());
     }
 
@@ -201,7 +221,8 @@ class User extends Entity
 
         if (!$id) throw new UserActionException("User ID not specified.");
 
-        $response = $this->request()->post($this->api_url("users.createToken"))
+        $response = $this->request()
+            ->post($this->api_url("users.createToken"))
             ->body([$paramType => $id])
             ->send();
 
@@ -217,8 +238,10 @@ class User extends Entity
 
         if (!$id) throw new UserActionException("User ID not specified.");
 
-        $response = $this->request()->get($this->api_url("users.getAvatar", [$paramType => $id]))
+        $response = $this->request()
+            ->get($this->api_url("users.getAvatar", [$paramType => $id]))
             ->send();
+
         return $this->handle_response($response, new UserActionException());
     }
 
@@ -231,8 +254,10 @@ class User extends Entity
 
         if (!$id) throw new UserActionException("User ID not specified.");
 
-        $response = $this->request()->get($this->api_url("users.getPresence", [$paramType => $id]))
+        $response = $this->request()
+            ->get($this->api_url("users.getPresence", [$paramType => $id]))
             ->send();
+
         return $this->handle_response($response, new UserActionException(), ["presence"]);
     }
 
@@ -277,6 +302,7 @@ class User extends Entity
         $response = $this->request()->post($this->api_url("users.resetAvatar"))
             ->body([$paramType => $id])
             ->send();
+
         return $this->handle_response($response, new UserActionException());
     }
 
@@ -355,6 +381,16 @@ class User extends Entity
         return $this->verified;
     }
 
+    public function requirePasswordChange()
+    {
+        return $this->requirePasswordChange;
+    }
+
+    public function sendWelcomeEmail()
+    {
+        return $this->sendWelcomeEmail;
+    }
+
     public function authToken()
     {
         return $this->authToken;
@@ -405,6 +441,18 @@ class User extends Entity
     public function setVerified($verified)
     {
         $this->verified = $verified;
+        return $this;
+    }
+
+    public function setRequirePasswordChange($requirePasswordChange)
+    {
+        $this->requirePasswordChange = $requirePasswordChange;
+        return $this;
+    }
+
+    public function setSendWelcomeEmail($sendWelcomeEmail)
+    {
+        $this->sendWelcomeEmail = $sendWelcomeEmail;
         return $this;
     }
 }
