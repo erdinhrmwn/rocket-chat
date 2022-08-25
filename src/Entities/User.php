@@ -327,16 +327,16 @@ class User extends Entity
 
     public function toJson()
     {
-        $data = collect();
-        $data->put("id", $this->id());
-        $data->put("username", $this->username());
-        $data->put("name", $this->name());
-        $data->put("email", $this->email());
-        $data->put("emails", $this->emails());
-        $data->put("roles", $this->roles());
-        $data->put("active", $this->active());
-        $data->put("verified", $this->verified());
-        return (object) $data->all();
+        $data = [];
+        $data["id"] = $this->id();
+        $data["username"] = $this->username();
+        $data["name"] = $this->name();
+        $data["email"] = $this->email();
+        $data["emails"] = $this->emails();
+        $data["roles"] = $this->roles();
+        $data["active"] = $this->active();
+        $data["verified"] = $this->verified();
+        return (object) $data;
     }
 
     /** Getters and Setters */

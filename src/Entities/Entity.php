@@ -122,7 +122,13 @@ class Entity
         return $body;
     }
 
-    /* To use the next three methods the rest api method need to support the Offset and Count Query Parameters. */
+    /* To use the next methods the rest api method need to support the Offset and Count Query Parameters. */
+
+    public function all()
+    {
+        $this->extraQuery["count"] = 0;
+        return $this;
+    }
 
     public function skip($value)
     {
@@ -140,6 +146,20 @@ class Entity
     {
         $value = is_array($value) ? json_encode((object)$value) : $value;
         $this->extraQuery["sort"] = $value;
+        return $this;
+    }
+
+    public function query($value)
+    {
+        $value = is_array($value) ? json_encode((object)$value) : $value;
+        $this->extraQuery["query"] = $value;
+        return $this;
+    }
+
+    public function fields($value)
+    {
+        $value = is_array($value) ? json_encode((object)$value) : $value;
+        $this->extraQuery["fields"] = $value;
         return $this;
     }
 }
